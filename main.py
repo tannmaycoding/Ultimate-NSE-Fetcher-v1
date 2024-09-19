@@ -11,10 +11,6 @@ if name == "NSE Share":
 
 start, end = st.columns(2, vertical_alignment="top")
 
-# Initialize services_count in session state if it doesn't exist
-if 'services_count' not in st.session_state:
-    st.session_state.services_count = 0
-
 sdate = start.selectbox("Start Date", options=["01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12",
                                                "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24",
                                                "25", "26", "27", "28", "29", "30", "31"])
@@ -42,12 +38,6 @@ end_date = f"{edate}-{emonth}-{eyear}"
 
 
 def fetch_prices():
-    st.session_state.services_count += 1
-
-    if st.session_state.services_count >= 20:
-        st.error("You have used our services more than 20 times, which is the guest account limit.")
-        st.stop()
-
     try:
         # Fetch data from the library
         if name == "India Vix":
