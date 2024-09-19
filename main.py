@@ -8,9 +8,6 @@ options = ["NSE Share", "Nifty 500", "Nifty 100", "Nifty 200", "Nifty 50", "Nift
            "Nifty Midcap Select", "Nifty Midcap 100", "Nifty Smallcap 250", "India Vix"]
 name = st.selectbox("NSE Type Name", options=options)
 
-if 'services_count' not in st.session_state:
-    st.session_state.services_count = 0
-
 if name == "NSE Share":
     name2 = st.text_input("NSE Share: ")
 
@@ -43,30 +40,23 @@ end_date = f"{edate}-{emonth}-{eyear}"
 
 
 def fetch_prices():
-    st.session_state.services_count += 1
+    try:
+        # Fetch data from the library
+        if name == "India Vix":
+            vix_data = capital_market.india_vix_data(start_date, end_date)
+            return vix_data
 
-    if st.session_state.services_count >= 20:
-        st.error("You have used our services more than 20 times, which is the guest account limit.")
-        st.stop()
-        
-    else:    
-        try:
-            # Fetch data from the library
-            if name == "India Vix":
-                vix_data = capital_market.india_vix_data(start_date, end_date)
-                return vix_data
-    
-            elif name != "NSE Share":
-                indexData = capital_market.index_data(name, start_date, end_date)
-                return indexData
-    
-            else:
-                nseData = capital_market.price_volume_and_deliverable_position_data(name2, start_date, end_date)
-                return nseData
-    
-        except Exception as e:
-            st.error(f"Error fetching data: {e}")
-            return None
+        elif name != "NSE Share":
+            indexData = capital_market.index_data(name, start_date, end_date)
+            return indexData
+
+        else:
+            nseData = capital_market.price_volume_and_deliverable_position_data(name2, start_date, end_date)
+            return nseData
+
+    except Exception as e:
+        st.error(f"Error fetching data: {e}")
+        return None
 
 
 # Function to convert DataFrame to CSV
@@ -76,9 +66,11 @@ def convert_df_to_csv(dataframe: pd.DataFrame):
 
 def convert_df_to_excel(dataframe: pd.DataFrame):
     output = BytesIO()
+    
     with pd.ExcelWriter(output, engine='xlsxwriter') as writer:
         dataframe.to_excel(writer, index=False, sheet_name='Sheet1')
     processed_data = output.getvalue()
+    
     return processed_data
 
 
@@ -89,6 +81,7 @@ high = plot_col2.checkbox("High")
 low = plot_col3.checkbox("Low")
 close = plot_col4.checkbox("Close")
 plot_options = []
+
 # Button to fetch graph data
 if st.button("Get Graph"):
     data = fetch_prices()
@@ -117,7 +110,6 @@ if st.button("Get Graph"):
                 st.warning("None of the selected columns are available in the data.")
 
         else:
-
             if openPrice:
                 plot_options.append("OpenPrice")
 
