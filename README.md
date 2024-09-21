@@ -14,6 +14,13 @@ The working:
    - Takes data of the share
    - Removing some columns to not plot
    - Using streamlits `st.line_chart` to plot the dataframe
-     - Takes the data
-     - Make another buttons `Download as CSV` and `Download as Excel will come` after doing all the fetching
-     - Clicking that button downloads the data
+     
+3. When you press `Download Data`:
+   - Takes the data
+   - Make another buttons `Download as CSV` and `Download as Excel will come` after doing all the fetching
+   - Clicking that button downloads the data
+  
+4. When you press `View Data`:
+   - Takes the data
+   - Removes the colummns not to show
+   - Shows he data in form of pandas dataframe by using streamlits `st.dataframe` function
