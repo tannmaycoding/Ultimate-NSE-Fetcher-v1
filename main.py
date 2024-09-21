@@ -168,7 +168,7 @@ if start_date != end_date:
 
     if st.button("View Data"):
         data = fetch_prices()
-        if name != "NSE Share":
+        if name == "NSE Share":
             data["No.ofTrades"] = pd.to_numeric(data["No.ofTrades"].str.replace(",", ""))
 
         if data is not None:
